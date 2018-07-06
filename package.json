@@ -1,11 +1,67 @@
 {
-  "name": "origamiboat-boot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "origamiboat-boot",
+    "version": "1.0.1",
+    "description": "",
+    "main": "index.js",
+    "bin": {
+        "origamiboat-boot": "./bin/origamiboat"
+    },
+    "files": [
+        "lib",
+        "bin"
+    ],
+    "scripts": {
+        "start": "node ./bin/origamiboat",
+        "dev": "webpack-dev-server --config ./webpack/webpack.config.js --hot",
+        "build": "npm run clean && webpack --config ./webpack/webpack.production.js",
+        "analyze": "npm run clean && webpack --config ./webpack/webpack.analyze.js",
+        "clean": "rimraf ./dist/*",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "ui",
+        "react",
+        "origamiboat"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/laincarl/origamiboat-boot.git"
+    },
+    "bugs": {
+        "url": "https://github.com/laincarl/origamiboat-boot/issues"
+    },
+    "author": "laincarl",
+    "license": "ISC",
+    "devDependencies": {
+        "css-loader": "^0.28.11",
+        "extract-text-webpack-plugin": "^3.0.2",
+        "file-loader": "^1.1.11",
+        "html-webpack-plugin": "^3.2.0",
+        "less-loader": "^4.1.0",
+        "rimraf": "^2.6.1",
+        "style-loader": "^0.21.0",
+        "webpack": "^4.10.1",
+        "webpack-bundle-analyzer": "^2.13.1",
+        "webpack-cli": "^2.1.4",
+        "webpack-dev-server": "^3.1.4",
+        "webpack-less-theme-plugin": "^2.1.0",
+        "webpack-merge": "^4.1.2"
+    },
+    "dependencies": {
+        "babel": "^6.23.0",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.4",
+        "babel-plugin-import": "^1.7.0",
+        "babel-plugin-transform-decorators-legacy": "^1.3.4",
+        "babel-polyfill": "^6.26.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babel-preset-react": "^6.24.1",
+        "babel-preset-stage-1": "^6.24.1",
+        "commander": "^2.16.0",
+        "less": "^3.0.4",
+        "postcss-loader": "^2.1.5",
+        "react": "^16.4.0",
+        "react-dom": "^16.4.0",
+        "react-hot-loader": "^4.2.0"
+    }
 }
