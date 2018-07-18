@@ -1,21 +1,26 @@
 {
     "name": "origamiboat-boot",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "description": "",
-    "main": "index.js",
+    "main": "lib/index.js",
     "bin": {
         "origamiboat-boot": "./bin/origamiboat"
     },
     "files": [
         "lib",
-        "bin"
+        "bin",
+        "src"
     ],
     "scripts": {
-        "start": "node ./bin/origamiboat",
-        "dev": "webpack-dev-server --config ./webpack/webpack.config.js --hot",
+        "copy": "node ./bin/copy",
+        "compile": "npm run copy && babel -d lib/ src/",
+        "prestart": "npm run compile",
+        "dev": "node ./bin/origamiboat start",
+        "start": "webpack-dev-server --config ./webpack/webpack.config.js --hot",
         "build": "npm run clean && webpack --config ./webpack/webpack.production.js",
         "analyze": "npm run clean && webpack --config ./webpack/webpack.analyze.js",
         "clean": "rimraf ./dist/*",
+        "prepublish": "npm run compile",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -49,6 +54,7 @@
     },
     "dependencies": {
         "babel": "^6.23.0",
+        "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",
         "babel-loader": "^7.1.4",
         "babel-plugin-import": "^1.7.0",
@@ -58,6 +64,7 @@
         "babel-preset-react": "^6.24.1",
         "babel-preset-stage-1": "^6.24.1",
         "commander": "^2.16.0",
+        "fs-extra": "^6.0.1",
         "less": "^3.0.4",
         "postcss-loader": "^2.1.5",
         "react": "^16.4.0",

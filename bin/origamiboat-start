@@ -1,16 +1,28 @@
 #!/usr/bin/env node
 
-const program = require('commander');
-const package = require('../package.json');
+// const program = require('commander');
+// const package = require('../package.json');
 
-program
-  .version(package.version)
-  .usage('[command] [options]')
-  .command('start [options]', 'to start a server')
-  .command('build [options]', 'to build and write static files to `config.output`')
-  .parse(process.argv);
+// console.log(process.cwd())
+// program
+//     .version(package.version)
+//     .usage('[command] [options]')
+//     .command('start [options]', 'to start a server')
+//     .command('build [options]', 'to build and write static files to `config.output`')
+//     .parse(process.argv);
 
-process.on('SIGINT', function() {
-  program.runningCommand && program.runningCommand.kill('SIGKILL');
-  process.exit(0);
-});
+// process.on('SIGINT', function() {
+//     program.runningCommand && program.runningCommand.kill('SIGKILL');
+//     process.exit(0);
+// });
+
+const WebpackDevServer = require('webpack-dev-server')
+const config = require('../webpack/webpack.config')
+const serverConfig = require('../webpack/serverConfig')
+const webpack = require('webpack')
+const compiler = webpack(config);
+const path = require('path');
+const server = new WebpackDevServer(compiler, serverConfig);
+server.listen(3000, 'localhost', function(err) {
+    if (err) throw err
+})

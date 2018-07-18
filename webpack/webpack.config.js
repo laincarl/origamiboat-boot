@@ -2,18 +2,21 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const LessThemePlugin = require('webpack-less-theme-plugin');
 
+const ROOT_DIR = path.resolve(__dirname, '../');
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   // devtool: 'eval',
   entry: {
-    app: ['babel-polyfill', './src/index.js'],
+    
+    app: ["webpack-dev-server/client?http://localhost:3000/",'webpack/hot/only-dev-server','babel-polyfill', path.resolve(ROOT_DIR, './src/index.js')],
+    // vendor: ['react', 'react-dom'], //分离第三方库
   },
-
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/', // 以保证资源路径正确有效。
+    path: path.resolve(ROOT_DIR, 'dist'),
+    publicPath: '/', // 以保证资源路径正确。
     filename: 'app/[name]_[hash:8].js',
     chunkFilename: 'app/chunks/[name].[chunkhash:5].chunk.js',
   },
@@ -48,7 +51,7 @@ module.exports = {
           chunks: 'initial',
           minChunks: 2,
           maxInitialRequests: 5,
-          minSize: 0,   
+          minSize: 0,
         },
         vendor: {
           test: /node_modules/,
@@ -66,25 +69,89 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
-
+  resolve: {
+    modules: [path.resolve(ROOT_DIR, 'node_modules')], // 优化webpack文件搜索范围
+    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.less'],
+    alias: {
+      '@': ROOT_DIR,
+    },
+  },
   module: {
     rules: [
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'style-loader',
           },
           {
             loader: 'css-loader',
-          }, 
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
           {
             loader: 'postcss-loader',
+            options: {
+              config: {
+                path: path.resolve(ROOT_DIR, './config'), // 写到目录即可，文件名强制要求是postcss.config.js
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            // options: {
+            //   modules: true,
+            //   localIndexName: '[name]__[local]___[hash:base64:5]',
+            // },
           },
         ],
       },
       {
         test: /\.less$/,
+        exclude: [/node_modules/, /theme\.less/],
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: path.resolve(ROOT_DIR, './config'), // 写到目录即可，文件名强制要求是postcss.config.js
+              },
+            },
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              // sourceMap: process.env.NODE_ENV !== 'production',
+              javascriptEnabled: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.less$/,
+        include: [/node_modules/, /theme\.less/],
         use: [
           {
             loader: 'style-loader',
@@ -95,12 +162,13 @@ module.exports = {
           {
             loader: 'less-loader',
             options: {
-              sourceMap: process.env.NODE_ENV !== 'production',
-              javascriptEnabled: true
+              // sourceMap: process.env.NODE_ENV !== 'production',
+              javascriptEnabled: true,
             },
           },
         ],
       },
+
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -109,7 +177,7 @@ module.exports = {
           query: {
             plugins: [['import', { libraryName: 'antd', style: true }]], // style: true 会加载 less 文件 style: 'css' 会加载 css 文件
           },
-        }
+        },
         ],
       },
       {
@@ -137,29 +205,34 @@ module.exports = {
       },
     ],
   },
-  devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    compress: true,
-    port: 3000,
-    host: '0.0.0.0', // 允许局域网通过ip访问
-    public: 'localhost:3000', // 加了host之后，open会打开0.0.0.0，所以需要定义public
-    stats: 'errors-only',
-    open: true,
-    // 不需要设置跨域，直接后台设置允许跨域
-    // proxy: {
-    //   // /test => http://localhost:8000/test
-    //   '/api/**': {
-    //     target: 'http://localhost:8000',
-    //     changeOrigin: true,
-    //     // pathRewrite: { '^/api': '' },
-    //   },
-    // },
-  },
+  // devServer: {
+  //   contentBase: path.resolve(ROOT_DIR, 'dist'),
+  //   hot: true,
+  //   compress: true,
+  //   port: 3000,
+  //   host: '0.0.0.0', // 允许局域网通过ip访问
+  //   public: 'localhost:3000', // 加了host之后，open会打开0.0.0.0，所以需要定义public
+  //   stats: 'errors-only',
+  //   open: true,
+  //   historyApiFallback: true, // 支持browerhistory
+  //   // 不需要设置跨域，直接后台设置允许跨域
+  //   // proxy: {
+  //   //   // /test => http://localhost:8000/test
+  //   //   '/api/**': {
+  //   //     target: 'http://localhost:8000',
+  //   //     changeOrigin: true,
+  //   //     // pathRewrite: { '^/api': '' },
+  //   //   },
+  //   // },
+  // },
   plugins: [
+    new LessThemePlugin({ theme: path.resolve(ROOT_DIR, './theme.less') }), // 使antd主题可以热加载
     // new ExtractTextPlugin('styles.css'),
-    // new webpack.DefinePlugin({
-    //  'process.env.BUILD_TIME': JSON.stringify(moment().format('YYYY-MM-DD HH:mm:ss')),
+    // new CommonsChunkPlugin({
+    //   names: ['vendor', 'manifest'], // name是提取公共代码块后js文件的名字。
+    //   // chunks: ['vendor'] //只有在vendor中配置的文件才会提取公共代码块至manifest的js文件中
     // }),
+    // new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: '首页',
       inject: true,
@@ -171,8 +244,14 @@ module.exports = {
         removeEmptyAttributes: true,
         removeStyleLinkTypeAttributes: true,
       },
+      // hash: true,
+      // excludeChunks:['contact'],
       chunks: ['manifest', 'vendor', 'app'],
-      template: './public/index.ejs', // Load a custom template (ejs by default see the FAQ for details)
+      // chunks:['vendor','app'],
+      favicon: path.resolve(ROOT_DIR, './favicon.ico'),
+      template: path.resolve(ROOT_DIR, './src/index.ejs'), // Load a custom template (ejs by default see the FAQ for details)
     }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 };
