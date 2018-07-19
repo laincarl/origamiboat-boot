@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessThemePlugin = require('webpack-less-theme-plugin');
+const moment = require('moment');
 
 const ROOT_DIR = path.resolve(__dirname, '../');
 module.exports = {
@@ -69,13 +70,27 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
-  // resolve: {
-  //   modules: [path.resolve(ROOT_DIR, 'node_modules')], // 优化webpack文件搜索范围
-  //   extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.less'],
-  //   alias: {
-  //     '@': ROOT_DIR,
-  //   },
-  // },
+  resolve: {
+    // modules: [path.resolve(ROOT_DIR, 'node_modules')], // 优化webpack文件搜索范围
+    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.less'],
+    alias: {
+      '@': ROOT_DIR,
+      component: path.resolve(ROOT_DIR, './src/component'),
+      store: path.resolve(ROOT_DIR, './src/store'),
+      css: path.resolve(ROOT_DIR, './src/assets/css'),
+      util: path.resolve(ROOT_DIR, './src/util'),
+      config: path.resolve(ROOT_DIR, './config.js'),
+      Loading: path.resolve(ROOT_DIR, './src/component/common/Loading.js'),
+      Action: path.resolve(ROOT_DIR, './src/component/common/Action.js'),
+      Axios: path.resolve(ROOT_DIR, './src/util/axios.js'),
+      MainHeader: path.resolve(ROOT_DIR, './src/component/common/MainHeader.js'),
+      Header: path.resolve(ROOT_DIR, './src/component/common/Header.js'),
+      Spin: path.resolve(ROOT_DIR, './src/component/common/Spin.js'),
+      AppState: path.resolve(ROOT_DIR, './src/store/AppState.js'),
+      Permission: path.resolve(ROOT_DIR, './src/component/common/Permission.js'),
+      Constants: path.resolve(ROOT_DIR, './src/util/Constants.js'),
+    },
+  },
   module: {
     rules: [
       {
@@ -233,6 +248,9 @@ module.exports = {
     //   // chunks: ['vendor'] //只有在vendor中配置的文件才会提取公共代码块至manifest的js文件中
     // }),
     // new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.BUILD_TIME': JSON.stringify(moment().format('YYYY-MM-DD HH:mm:ss')),
+    }),
     new HtmlWebpackPlugin({
       title: '首页',
       inject: true,
