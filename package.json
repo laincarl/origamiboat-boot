@@ -1,6 +1,6 @@
 {
     "name": "origamiboat-boot",
-    "version": "1.0.3",
+    "version": "1.0.8",
     "description": "",
     "main": "lib/index.js",
     "bin": {
@@ -9,7 +9,11 @@
     "files": [
         "lib",
         "bin",
-        "src"
+        "src",
+        "webpack",
+        "config",
+        ".babelrc",
+        "favicon.ico"
     ],
     "scripts": {
         "copy": "node ./bin/copy",
@@ -37,7 +41,7 @@
     },
     "author": "laincarl",
     "license": "ISC",
-    "devDependencies": {
+    "dependencies": {
         "css-loader": "^0.28.11",
         "extract-text-webpack-plugin": "^3.0.2",
         "file-loader": "^1.1.11",
@@ -50,9 +54,7 @@
         "webpack-cli": "^2.1.4",
         "webpack-dev-server": "^3.1.4",
         "webpack-less-theme-plugin": "^2.1.0",
-        "webpack-merge": "^4.1.2"
-    },
-    "dependencies": {
+        "webpack-merge": "^4.1.2",
         "babel": "^6.23.0",
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",

@@ -11,7 +11,7 @@ module.exports = {
   // devtool: 'eval',
   entry: {
     
-    app: ["webpack-dev-server/client?http://localhost:3000/",'webpack/hot/only-dev-server','babel-polyfill', path.resolve(ROOT_DIR, './src/index.js')],
+    app: ["webpack-dev-server/client?http://localhost:3000/",'webpack/hot/only-dev-server','babel-polyfill', path.resolve(ROOT_DIR, './lib/index.js')],
     // vendor: ['react', 'react-dom'], //分离第三方库
   },
   output: {
@@ -69,13 +69,13 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
-  resolve: {
-    modules: [path.resolve(ROOT_DIR, 'node_modules')], // 优化webpack文件搜索范围
-    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.less'],
-    alias: {
-      '@': ROOT_DIR,
-    },
-  },
+  // resolve: {
+  //   modules: [path.resolve(ROOT_DIR, 'node_modules')], // 优化webpack文件搜索范围
+  //   extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', '.less'],
+  //   alias: {
+  //     '@': ROOT_DIR,
+  //   },
+  // },
   module: {
     rules: [
       {
