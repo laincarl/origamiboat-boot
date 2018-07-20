@@ -4,73 +4,15 @@ const WebpackDevServer = require('webpack-dev-server');
 const config = require('../webpack/webpack.config');
 const serverConfig = require('../webpack/serverConfig');
 const webpack = require('webpack');
-// const fs = require('fs');
+const initRoute = require('./initRoute');
 
-const compiler = webpack(config);
-const path = require('path');
-const fs = require('fs-extra');
-const babel = require('babel-core');
-
-const RouteTemplatePath = path.resolve(__dirname, '../RouteTemplate.js');
-const RouteTargetPath = path.resolve(__dirname, '../src/App.js');
-// const packageInfo = require(getPackagePath(module));
-// Object.assign(dependencies, packageInfo.dependencies);
-const packagePath = path.resolve(process.cwd(), 'package.json');
-const packageInfo = require(packagePath);
-const { main, name } = packageInfo;
-const mainPath = path.resolve(process.cwd(), main);
-
-const babelConfig = {
-  presets: [
-    ['es2015'], 'react', 'stage-1',
-  ],
-  plugins: ['transform-decorators-legacy', 'react-hot-loader/babel', [
-    'import',
-    {
-      libraryName: 'antd',
-      style: true,
+initRoute().then(() => {
+  const compiler = webpack(config);
+  const server = new WebpackDevServer(compiler, serverConfig);
+  server.listen(
+    3000, 'localhost',
+    (err) => {
+      if (err) throw err;
     },
-  ]],
-};
-
-function escapeWinPath(path) {
-  return path.replace(/\\/g, '\\\\');
-}
-
-function generateRoutes(originData, replaceCode) {
-  let data = originData;
-  Object.keys(replaceCode).forEach((code) => {
-    const reg = new RegExp(`{%${code}%}`, 'g');
-    data = data.replace(reg, match => replaceCode[code]);
-  });
-
-  //   return babel.transform(data, babelConfig).code;
-  return data;
-}
-try {
-  const imports = [];
-  imports.push(`import ${name} from '${escapeWinPath(mainPath)}'`);
-  const routes = [
-    `<Route path="/${name}" component={${name}} />`,
-  ];
-
-  if (imports.length > 0 && routes.length > 0) {
-    fs.readFile(RouteTemplatePath, 'utf8', (err, data) => {
-      //   generateRoutes(data, { imports, routes });
-      //   console.log(data, generateRoutes(data, { imports, routes }));
-      fs.writeFile(RouteTargetPath, generateRoutes(data, { imports, routes }), () => {
-
-      });
-    });
-  }
-  console.log('success!');
-} catch (err) {
-  console.error(err);
-}
-const server = new WebpackDevServer(compiler, serverConfig);
-server.listen(
-  3000, 'localhost',
-  (err) => {
-    if (err) throw err;
-  },
-);
+  );
+});

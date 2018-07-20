@@ -7,25 +7,22 @@
         "origamiboat-boot": "./bin/origamiboat"
     },
     "files": [
-        "lib",
         "bin",
+        "src",
         "webpack",
         "config",
-        ".babelrc",
         "favicon.ico",
         "config.js",
         "theme.less"
     ],
     "scripts": {
         "copy": "node ./bin/copy",
-        "compile": "npm run copy && babel -d lib/ src/",
-        "prestart": "npm run compile",
+        "prestart": "npm run copy",
         "start": "node ./bin/origamiboat start",
         "dev": "webpack-dev-server --config ./webpack/webpack.config.js --hot",
         "build": "npm run clean && webpack --config ./webpack/webpack.production.js",
         "analyze": "npm run clean && webpack --config ./webpack/webpack.analyze.js",
         "clean": "rimraf ./dist/*",
-        "prepublish": "npm run compile",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -68,7 +65,6 @@
         "less": "^3.0.4",
         "less-loader": "^4.1.0",
         "commander": "^2.16.0",
-        "fs-extra": "^6.0.1",
         "postcss-loader": "^2.1.5",
         "react": "^16.4.0",
         "react-dom": "^16.4.0",
