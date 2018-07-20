@@ -12,7 +12,7 @@ module.exports = {
   // devtool: 'eval',
   entry: {
     
-    app: ["webpack-dev-server/client?http://localhost:3000/",'webpack/hot/only-dev-server','babel-polyfill', path.resolve(ROOT_DIR, './lib/index.js')],
+    app: ['webpack-dev-server/client?http://localhost:3000/', 'webpack/hot/only-dev-server', 'babel-polyfill', path.resolve(ROOT_DIR, './src/index.js')],
     // vendor: ['react', 'react-dom'], //分离第三方库
   },
   output: {
@@ -189,9 +189,22 @@ module.exports = {
         exclude: /node_modules/,
         use: [{
           loader: 'babel-loader',
-          query: {
-            plugins: [['import', { libraryName: 'antd', style: true }]], // style: true 会加载 less 文件 style: 'css' 会加载 css 文件
+          options: {
+            presets: [
+              ['es2015'], 'react', 'stage-1',
+            ],
+            plugins: ['transform-decorators-legacy', 'react-hot-loader/babel', [
+              'import',
+              {
+                libraryName: 'antd',
+                style: true,
+              },
+            ]],
           },
+          // query: {
+          //   plugins: [['import', { libraryName: 'antd', style: true }]], 
+          // style: true 会加载 less 文件 style: 'css' 会加载 css 文件
+          // },
         },
         ],
       },
